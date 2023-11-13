@@ -14,6 +14,8 @@ function horner(c,x)
     return y
 end
 
+#######################################  Start of Widad's Practice  #######################################
+
 # testing lambda functions syntax on page 20 
 mycfun(x) = exp(c*sin(x))
 
@@ -23,7 +25,7 @@ c=2; mycfun(3)
 ans2 = exp(2*sin(3))
 
 # poor conditioned quadratic polynomial on page 21 
-# p(x) = ax2`+ bx + c considering a = 1, b = ((10^6) + (10^-6)), c = 1
+# p(x) = ax2 + bx + c considering a = 1, b = ((10^6) + (10^-6)), c = 1
 a = 1; b = -((10^6) + (10^-6)); c = 1
 @show x1 = (-b + sqrt(b^2 - 4*a*c))/(2*a)
 @show x2 = (-b - sqrt(b^2 - 4*a*c))/(2*a)

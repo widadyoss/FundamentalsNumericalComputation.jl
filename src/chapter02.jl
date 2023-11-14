@@ -172,7 +172,6 @@ U[4,4] = A₄[4,4]
 # Flop (floating-point operation) counting
 # Demo 2.5.6 page 61
 
-
 randn(5,5) *randn(5) #throwaway to force compilation
 
 n = 400:200:6000
@@ -198,4 +197,32 @@ scatter(n,t,label = "data", legend = false,
 # plot of a line that represents O(n^2) growth (❗ all such lines have the slope of 2)
 plot!(n,t[end]*(n/n[end]).^2,label = L"O(n^2)", legend = :topleft, l=:dash)
 
+# Row pivoting 
+# A = LU factorization is not always stable for every nonsingular matrix A
+# Sometimes the factorization odes not even exist
+# Demo 2.6.1 page 66
 
+A = [2 0 4 3; -4 5 -7 -10; 1 15 2 -4.5; -2 0 2 -13]
+L,U = FNC.lufact(A)
+@show L
+@show U
+
+A[[2,4],:]  = A[[4,2],:] 
+@show A
+L, U = FNC.lufact(A)
+@show L
+@show U
+
+# Note (❗) : The presence if NaN in the result indicates that some impossible operation 
+# was required. Let's find the source of the problem 
+
+U[1,:] = A[1,:]
+L[:,1] = A[:,1]/U[1,1]
+A-= L[:,1]*U[1,:]'
+U[2,:] = A[2,:]
+@show U[2,2]
+@show A[:,2]
+L[:,2] = A[:,2]/U[2,2] # division by zero (❗)
+
+# Note LU factorization is equivalent to Gaussian elimination with no row swaps 
+# Row swaps are necessary to avoid division by zero 

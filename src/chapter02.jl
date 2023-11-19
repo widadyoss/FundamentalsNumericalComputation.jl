@@ -1,3 +1,5 @@
+using FundamentalsNumericalComputation
+
 """
     forwardsub(L,b)
 
@@ -226,3 +228,32 @@ L[:,2] = A[:,2]/U[2,2] # division by zero (❗)
 
 # Note LU factorization is equivalent to Gaussian elimination with no row swaps 
 # Row swaps are necessary to avoid division by zero 
+
+# 2.8 conditioning of linear systems (p. 82)
+# Demo 2.8.1 page 83
+
+# The family of Hilbert matrices are badly conditioned
+# below a 6*6 Hilbert matrix
+
+A = [1/(i+j1) for i=1:6, j=1:6]
+
+κ = cond(A) 
+# 5.109816297946132e7 because k ≈ 10^8, it's possible to lose 8 digits of accuracy in the solution of Ax = b ( passing from A and b to x)
+# Let's engineer a linear system problem to observe the effect of perturbation. We will make sure we know the exact answer: 
+x = 1:6
+b = A*x
+#Now we perturb the the system matrix and vector randomly by 10^-10 in norm : 
+ΔA = randn(size(A)); ΔA = 1e-10*ΔA/opnorm(ΔA)
+Δb = randn(size(b)); Δb = 1e-10*Δb/norm(Δb)
+# we solve the perturbed system
+new_x = (A+ΔA)\(b+Δb)
+Δx = new_x - x
+# the relative error in the solution is
+@show relative_error = norm(Δx)/norm(x) 
+
+# (❗) Even if we do not make any perturbation, 
+#the computed solution will have a relative error at the 
+#level of ϵ_mach 
+
+Δx = A\b - x
+@show relative_error = norm(Δx)/norm(x)
